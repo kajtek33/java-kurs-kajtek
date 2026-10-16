@@ -106,3 +106,4 @@ public class homework1 {
         System.out.println("DZIĘKUJEMY ZA KORZYSTANIE Z NASZYCH LINII LOTNICZYCH - MIŁEGO LOTU :)");
     }
 }
+
