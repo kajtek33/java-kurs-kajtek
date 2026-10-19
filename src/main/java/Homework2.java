@@ -40,6 +40,7 @@ public class Homework2 {
                }
                if (!ok) {
                    rejected++;
+                   System.out.println("PACZKA ODRZUCONA");
                    continue;
                }
 
@@ -52,7 +53,7 @@ public class Homework2 {
                    boolean weightOK = false;
                    if (weightText.length() >= 1 && weightText.length() <= 5) {
                        boolean onlyDigits = true;
-                       for (int i = 0; i <= weightText.length() - 1; i++) {
+                       for (int i = 0; i < weightText.length(); i++) {
                            char c = weightText.charAt(i);
                            if (c < '0' || c > '9') {
                                onlyDigits = false;
