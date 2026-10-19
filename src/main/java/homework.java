@@ -29,7 +29,7 @@ public class homework {
         int dashIndex1 = code1.indexOf('-');
         String number1 = code1.substring(dashIndex1 + 1);
         int price1 = Integer.parseInt(number1);
-        String code2 = rawCode2.toUpperCase();
+        String code2 = rawCode2.strip().toUpperCase();
         int dashIndex2 = code2.indexOf('-');
         String number2 = code2.substring(dashIndex2 + 1);
         int price2 = Integer.parseInt(number2);
