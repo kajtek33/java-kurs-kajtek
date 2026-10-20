@@ -52,5 +52,31 @@ public class Homework3 {
         System.out.println("LICZBA ODCZYTÓW POWYŻEJ ŚREDNIEJ: " + bigger);
         System.out.println("ORYGINAŁ: " + Arrays.toString(readings) + " KOPIA: " + Arrays.toString(sortedReadings));
         System.out.println("MEDIANA: " + median);
+
+        // tablice dwuwymiarowe
+        int[][] halls = {
+                {10, 5, 20, 30},
+                {5, 15, 25, 50},
+                {10, 20, 30, 40}
+        };
+
+        double bestAverage = -Double.MAX_VALUE;
+        int bestHall = 0;
+
+        for (int i = 0; i < halls.length; i++) {
+            int hallsSum = 0;
+            for (int j = 0; j < halls[i].length; j++) {
+                hallsSum = hallsSum + halls[i][j];
+            }
+            double hallAverage = (double) hallsSum / halls[i].length;
+            if (hallAverage > bestAverage) {
+                bestAverage = hallAverage;
+                bestHall = i;
+            }
+
+            System.out.println("HALA " + (i + 1) + ": " + hallAverage);
+
+        }
+        System.out.println("NAJWYZSZA ŚREDNIA: HALA " + (bestHall + 1) );
     }
 }
