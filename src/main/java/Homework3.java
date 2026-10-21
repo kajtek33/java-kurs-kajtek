@@ -9,6 +9,7 @@ public class Homework3 {
         int count = sc.nextInt();
         if (count <= 0){
             System.out.println("PODAJ LICZBĘ WIĘKSZĄ OD ZERA.");
+            sc.close();
             return;
         }
         int[] readings = new int[count];
@@ -17,6 +18,7 @@ public class Homework3 {
             System.out.println("PODAJ ODCZYT NR. " + (i + 1));
             readings[i] = sc.nextInt();
         }
+        sc.close();
         int sum = 0;
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
