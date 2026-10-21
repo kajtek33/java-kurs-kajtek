@@ -13,6 +13,10 @@ public class Homework4 {
             int points = pointsFor(amounts[i]);
             System.out.println("PASEK: " + drawBar(points));
         }
+        String chosenCard = cards[0];
+        String digits = chosenCard.substring(3);
+        int number = Integer.parseInt(digits);
+        System.out.println("WYNIKI: " + "PĘTLA: " + digitSum(chosenCard) + ", REKURENCJA: " + digitSumRecursive(number));
     }
   public static boolean hasValidFormat(String card) {
      return card.length() == 9 && card.startsWith("LC-");
@@ -24,6 +28,12 @@ public class Homework4 {
           sum += c - '0';
       }
       return sum;
+  }
+  public static int digitSumRecursive(int number) {
+        if (number < 10) {
+            return number;
+        }
+        return (number % 10) + digitSumRecursive(number / 10);
   }
   public static int pointsFor(int cents) {
         return   cents / 10000;
