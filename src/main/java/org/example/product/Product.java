@@ -75,6 +75,6 @@ public class Product {
 
      @Override
      public String toString() {
-          return sku + " " + name + " — " + String.format(new Locale("pl", "PL"), "%.2f", netPrice) + " zł " + tags;
+          return sku + " " + name + " — " + String.format (Locale.forLanguageTag("pl-PL"), "%.2f", netPrice) + " zł " + tags;
      }
 }
