@@ -9,7 +9,8 @@ public class Homework4 {
             }
             System.out.println("SUMA CYFR: " + digitSum(cards[i]));
             System.out.println("KWOTA: " + formatMoney(amounts[i]));
-            System.out.println("PUNKTY: " + pointsFor(amounts[i]));
+            int points2 = pointsFor(amounts[i]);
+            System.out.println("PUNKTY: " + points2);
             int points = pointsFor(amounts[i]);
             System.out.println("PASEK: " + drawBar(points));
         }
