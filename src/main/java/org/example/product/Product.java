@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class Product {
+public abstract class Product {
      static final double DEFAULT_VAT_RATE = 0.23;
      private static int createdCount = 0;
 
@@ -15,7 +15,7 @@ public class Product {
      private double netPrice;
      private final List<String> tags;
 
-     private Product(String sku, String name, double netPrice) {
+     protected Product(String sku, String name, double netPrice) {
           if (sku == null || sku.isBlank()) {
                throw new IllegalArgumentException("SKU NIE MOŻE BYĆ PUSTY");
           }
@@ -32,39 +32,35 @@ public class Product {
           this.netPrice = netPrice;
           this.tags = new ArrayList<>();
           createdCount++;
-
      }
-     public Product(Product other) {
+
+     protected Product(Product other) {
           this(other.sku, other.name, other.netPrice);
           tags.addAll(other.tags);
      }
 
-     public static Product of(String sku, String name, double netPrice) {
-          return new Product(sku, name, netPrice);
+//     public static Product fromCsvLine (String line) {
+//          if (line == null) {
+//               throw new IllegalArgumentException("WIERSZ NIE MOŻE BYĆ NULL");
+//          }
+//
+//          String[] parts = line.split(";");
+//          if (parts.length != 3) {
+//               throw new IllegalArgumentException("ZŁY WIERSZ: " + line);
+//          }
+//
+//          double number;
+//          try {
+//               number = Double.parseDouble(parts[2]);
+//          } catch (NumberFormatException e) {
+//               throw new IllegalArgumentException("ZŁY WIERSZ: " + line);
+//          }
+//          return of(parts[0], parts[1], number);
+//     }
+
+     public static int getCreatedCount() {
+          return createdCount;
      }
-
-     public static Product fromCsvLine (String line) {
-          if (line == null) {
-               throw new IllegalArgumentException("WIERSZ NIE MOŻE BYĆ NULL");
-          }
-
-          String[] parts = line.split(";");
-          if (parts.length != 3) {
-               throw new IllegalArgumentException("ZŁY WIERSZ: " + line);
-          }
-
-          double number;
-          try {
-               number = Double.parseDouble(parts[2]);
-          } catch (NumberFormatException e) {
-               throw new IllegalArgumentException("ZŁY WIERSZ: " + line);
-          }
-          return of(parts[0], parts[1], number);
-     }
-
-          public static int getCreatedCount() {
-               return createdCount;
-          }
 
      public String getSku() {
           return sku;
@@ -77,13 +73,38 @@ public class Product {
      public double getNetPrice() {
           return netPrice;
      }
-          public List<String> getTags() {
-               return List.copyOf(tags);
-          }
+     public List<String> getTags() {
+          return List.copyOf(tags);
+     }
 
-          public double getGrossPrice() {
-               return netPrice * (1 + DEFAULT_VAT_RATE);
-          }
+     public double getGrossPrice() {
+          return netPrice * (1 + DEFAULT_VAT_RATE);
+     }
+
+     private String formatPrice(double value) {
+          return String.format(Locale.forLanguageTag("pl-PL"), "%.2f", value);
+     }
+
+     public String getDescription() {
+          return name + " — " + formatPrice(netPrice) + " zł";
+     }
+
+     public abstract double getShippingCost();
+
+     public abstract String getCategory();
+
+     // CENA W ZADANIU OZNACZA CENE NETTO
+     public final double getTotalPrice() {
+          return netPrice + getShippingCost();
+     }
+
+     public final String getLabel() {
+          return name + " [" + getCategory() + "] — " + formatPrice(netPrice) + " ZŁ (Z WYSYŁKĄ " + formatPrice(getTotalPrice()) + " ZŁ)";
+     }
+
+     public static void setCreatedCount(int createdCount) {
+          Product.createdCount = createdCount;
+     }
 
      public void addTag(String tag) {
           if (tag == null || tag.isBlank()) {
@@ -93,12 +114,12 @@ public class Product {
           tags.add(normalizedTag);
      }
 
-          public Product addTags(String... tags) {
-               for (String tag : tags) {
-                    addTag(tag);
-               }
-               return this;
+     public Product addTags(String... tags) {
+          for (String tag : tags) {
+               addTag(tag);
           }
+          return this;
+     }
 
      public void raisePriceBy(double percent) {
           if (!(percent > 0)) {
