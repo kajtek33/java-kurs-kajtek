@@ -1,15 +1,17 @@
 package org.example.product;
 
-public class FoodProduct extends Product {
-   private final String expiryDate;
+import java.time.LocalDate;
 
-    public FoodProduct(String sku, String name, double netPrice, String expiryDate) {
+public class FoodProduct extends Product implements Perishable {
+   private final LocalDate expiryDate;
+
+    public FoodProduct(String sku, String name, double netPrice, LocalDate expiryDate) {
        super(sku, name, netPrice);
 
        this.expiryDate = expiryDate;
     }
 
-    public String getExpiryDate() {
+    public LocalDate getExpiryDate() {
         return expiryDate;
     }
 
@@ -26,5 +28,10 @@ public class FoodProduct extends Product {
     @Override
     public String getDescription() {
         return super.getDescription() + " (TERMIN: " + getExpiryDate() + ")";
+    }
+
+    @Override
+    public boolean isExpired() {
+        return expiryDate.isBefore(LocalDate.now());
     }
 }
