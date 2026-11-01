@@ -1,6 +1,6 @@
 package org.example.product;
 
-public class Electronics extends Product{
+public class Electronics extends Product {
     private final int warrantyMonths;
 
     public Electronics(String sku, String name, double netPrice, int warrantyMonths) {

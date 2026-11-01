@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public abstract class Product {
+public abstract class Product implements Identifiable<String> {
      static final double DEFAULT_VAT_RATE = 0.23;
      private static int createdCount = 0;
 
@@ -156,5 +156,10 @@ public abstract class Product {
      @Override
      public String toString() {
           return sku + " " + name + " - " + String.format (Locale.forLanguageTag("pl-PL"), "NETTO %.2f / BRUTTO %.2f ZŁ", netPrice, getGrossPrice());
+     }
+
+     @Override
+     public String getId() {
+          return sku;
      }
 }

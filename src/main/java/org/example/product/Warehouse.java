@@ -2,39 +2,42 @@ package org.example.product;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class Warehouse {
-    private final List<Product> products = new ArrayList<>();
+public class Warehouse<T extends Identifiable<String>> {
+    private final List<T> products = new ArrayList<>();
 
-    public void add(Product product) {
-        products.add(product);
+    public void add(T item) {
+        products.add(item);
     }
 
-    public List<Product> getAll() {
+    public List<T> findAll() {
         return List.copyOf(products);
     }
 
     //wybieram cene bez wysłlki - koszt wysyłki nie jest wartoscią towaru lezącego w magazynie
 
-    public double getTotalValue() {
-        double total = 0;
-        for (Product product : products) {
-            total += product.getNetPrice();
-        }
-        return total;
-    }
 
     public int count() {
         return products.size();
     }
 
-    public Product findBySku(String sku) {
-        String normalSku = sku.trim().toUpperCase();
-        for (Product product : products) {
-            if (product.getSku().equals(normalSku)) {
-                return product;
+    public Optional<T> findById(String id) {
+        String normalId = id.trim();
+        for (T product : products) {
+            if (product.getId().equals(normalId)) {
+                return Optional.of(product);
             }
         }
-        return null;
+        return Optional.empty();
+    }
+
+    public boolean remove(String id) {
+        Optional<T> found = findById(id);
+        if (found.isPresent()) {
+            products.remove(found.get());
+            return true;
+        }
+        return false;
     }
 }
