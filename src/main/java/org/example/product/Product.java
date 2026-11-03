@@ -14,8 +14,9 @@ public abstract class Product implements Identifiable<String> {
      private final String name;
      private double netPrice;
      private final List<String> tags;
+     private final Category category;
 
-     protected Product(String sku, String name, double netPrice) {
+     protected Product(String sku, String name, double netPrice, Category category) {
           if (sku == null || sku.isBlank()) {
                throw new IllegalArgumentException("SKU NIE MOŻE BYĆ PUSTY");
           }
@@ -31,32 +32,18 @@ public abstract class Product implements Identifiable<String> {
           }
           this.netPrice = netPrice;
           this.tags = new ArrayList<>();
+
+          if (category == null) {
+               throw new IllegalArgumentException("KATEGORIA NIE MOŻE BYĆ PUSTA");
+          }
+          this.category = category;
           createdCount++;
      }
 
      protected Product(Product other) {
-          this(other.sku, other.name, other.netPrice);
+          this(other.sku, other.name, other.netPrice, other.category);
           tags.addAll(other.tags);
      }
-
-//     public static Product fromCsvLine (String line) {
-//          if (line == null) {
-//               throw new IllegalArgumentException("WIERSZ NIE MOŻE BYĆ NULL");
-//          }
-//
-//          String[] parts = line.split(";");
-//          if (parts.length != 3) {
-//               throw new IllegalArgumentException("ZŁY WIERSZ: " + line);
-//          }
-//
-//          double number;
-//          try {
-//               number = Double.parseDouble(parts[2]);
-//          } catch (NumberFormatException e) {
-//               throw new IllegalArgumentException("ZŁY WIERSZ: " + line);
-//          }
-//          return of(parts[0], parts[1], number);
-//     }
 
      public static int getCreatedCount() {
           return createdCount;
@@ -91,7 +78,9 @@ public abstract class Product implements Identifiable<String> {
 
      public abstract double getShippingCost();
 
-     public abstract String getCategory();
+     public Category getCategory() {
+          return category;
+     }
 
      // CENA W ZADANIU OZNACZA CENE NETTO
      public final double getTotalPrice() {
@@ -99,7 +88,7 @@ public abstract class Product implements Identifiable<String> {
      }
 
      public final String getLabel() {
-          return name + " [" + getCategory() + "] — " + formatPrice(netPrice) + " ZŁ (Z WYSYŁKĄ " + formatPrice(getTotalPrice()) + " ZŁ)";
+          return name + " [" + getCategory().getDisplayName() + "] — " + formatPrice(netPrice) + " ZŁ (Z WYSYŁKĄ " + formatPrice(getTotalPrice()) + " ZŁ)";
      }
 
      public static void setCreatedCount(int createdCount) {
