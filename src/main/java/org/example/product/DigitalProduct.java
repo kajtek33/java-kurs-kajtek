@@ -1,6 +1,6 @@
 package org.example.product;
 
-public class DigitalProduct extends Product{
+public class DigitalProduct extends Product {
     private final String downloadUrl;
 
     public DigitalProduct(String sku, String name, double netPrice, String downloadUrl) {
