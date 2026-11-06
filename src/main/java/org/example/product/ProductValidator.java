@@ -13,7 +13,7 @@ public class ProductValidator {
             if (field.isAnnotationPresent(NotBlank.class)) {
                 try {
                     Object value = field.get(obj);
-                    if (   value == null || (value instanceof String s && s.isBlank())) {
+                    if (value == null || (value instanceof String s && s.isBlank())) {
                        errors.add("POLE " + field.getName() + " NIE MOŻE BYĆ PUSTE");
                     }
                 } catch (IllegalAccessException e) {
