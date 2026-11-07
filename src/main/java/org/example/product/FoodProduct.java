@@ -6,18 +6,13 @@ public class FoodProduct extends Product implements Perishable {
    private final LocalDate expiryDate;
 
     public FoodProduct(String sku, String name, double netPrice, LocalDate expiryDate) {
-       super(sku, name, netPrice);
+       super(sku, name, netPrice, Category.FOOD);
 
        this.expiryDate = expiryDate;
     }
 
     public LocalDate getExpiryDate() {
         return expiryDate;
-    }
-
-    @Override
-    public String getCategory(){
-        return "JEDZENIE";
     }
 
     @Override
