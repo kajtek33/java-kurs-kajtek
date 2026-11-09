@@ -3,7 +3,7 @@ package org.example.product;
 public class DigitalProduct extends Product {
     private final String downloadUrl;
 
-    public DigitalProduct(String sku, String name, double netPrice, String downloadUrl) {
+    public DigitalProduct(String sku, String name, Money netPrice, String downloadUrl) {
         super(sku, name, netPrice, Category.ELECTRONICS);
 
         this.downloadUrl = downloadUrl;
@@ -14,8 +14,8 @@ public class DigitalProduct extends Product {
     }
 
     @Override
-    public double getShippingCost() {
-        return 0;
+    public Money getShippingCost() {
+        return Money.zero(getNetPrice().currency());
     }
 
     @Override

@@ -11,10 +11,10 @@ public class Utils {
 
     //wybieram cene bez wysłlki - koszt wysyłki nie jest wartoscią towaru lezącego w magazynie
 
-    public static double sumPrices(List<? extends Product> products) {
-        double total = 0;
+    public static Money sumPrices(List<? extends Product> products, String currency) {
+        Money total = Money.zero(currency);
         for (Product product : products) {
-            total += product.getNetPrice();
+            total = total.add(product.getNetPrice());
         }
         return total;
     }

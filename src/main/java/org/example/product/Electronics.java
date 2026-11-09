@@ -3,7 +3,7 @@ package org.example.product;
 public class Electronics extends Product {
     private final int warrantyMonths;
 
-    public Electronics(String sku, String name, double netPrice, int warrantyMonths) {
+    public Electronics(String sku, String name, Money netPrice, int warrantyMonths) {
         super(sku, name, netPrice, Category.ELECTRONICS);
 
         this.warrantyMonths = warrantyMonths;
@@ -14,11 +14,12 @@ public class Electronics extends Product {
     }
 
     @Override
-    public double getShippingCost() {
-        if (getNetPrice() > 2000) {
-            return 0;
+    public Money getShippingCost() {
+        Money freeShipping = Money.of("2000", getNetPrice().currency());
+        if (getNetPrice().isGreaterThan(freeShipping)) {
+            return Money.zero(getNetPrice().currency());
         }
-        return 19.99;
+        return Money.of("19.99", getNetPrice().currency());
     }
 
     @Override

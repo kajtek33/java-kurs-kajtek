@@ -1,21 +1,21 @@
 package org.example.product;
 
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 public abstract class Product implements Identifiable<String> {
-     static final double DEFAULT_VAT_RATE = 0.23;
+     static final double DEFAULT_VAT_RATE = 23;
      private static int createdCount = 0;
 
      private final String sku;
      private final String name;
-     private double netPrice;
+     private Money netPrice;
      private final List<String> tags;
      private final Category category;
 
-     protected Product(String sku, String name, double netPrice, Category category) {
+     protected Product(String sku, String name, Money netPrice, Category category) {
           if (sku == null || sku.isBlank()) {
                throw new IllegalArgumentException("SKU NIE MOŻE BYĆ PUSTY");
           }
@@ -26,7 +26,11 @@ public abstract class Product implements Identifiable<String> {
           }
           this.name = name.trim();
 
-          if (!(netPrice > 0)) {
+          if (netPrice == null) {
+               throw new IllegalArgumentException("BRAK CENY");
+          }
+
+          if (!(netPrice.isGreaterThan(Money.zero(netPrice.currency())))) {
                throw new IllegalArgumentException("KWOTA MUSI BYĆ WIĘKSZA OD 0");
           }
           this.netPrice = netPrice;
@@ -56,38 +60,36 @@ public abstract class Product implements Identifiable<String> {
           return name;
      }
 
-     public double getNetPrice() {
+     public Money getNetPrice() {
           return netPrice;
      }
      public List<String> getTags() {
           return List.copyOf(tags);
      }
 
-     public double getGrossPrice() {
-          return netPrice * (1 + DEFAULT_VAT_RATE);
-     }
-
-     private String formatPrice(double value) {
-          return String.format(Locale.forLanguageTag("pl-PL"), "%.2f", value);
+     public Money getGrossPrice() {
+          Money vat = netPrice.applyPercent(category.getVatRate());
+          return netPrice.add(vat);
      }
 
      public String getDescription() {
-          return name + " — " + formatPrice(netPrice) + " zł";
+          return name + " — " + netPrice;
      }
 
-     public abstract double getShippingCost();
+     public abstract Money getShippingCost();
 
      public Category getCategory() {
           return category;
      }
 
      // CENA W ZADANIU OZNACZA CENE NETTO
-     public final double getTotalPrice() {
-          return netPrice + getShippingCost();
+     public final Money getTotalPrice() {
+          Money total = netPrice.add(getShippingCost());
+          return total;
      }
 
      public final String getLabel() {
-          return name + " [" + getCategory().getDisplayName() + "] — " + formatPrice(netPrice) + " ZŁ (Z WYSYŁKĄ " + formatPrice(getTotalPrice()) + " ZŁ)";
+          return name + " [" + getCategory().getDisplayName() + "] — " + netPrice + " (Z WYSYŁKĄ " + getTotalPrice() + ")";
      }
 
      public static void setCreatedCount(int createdCount) {
@@ -113,7 +115,8 @@ public abstract class Product implements Identifiable<String> {
           if (!(percent > 0)) {
                throw new IllegalArgumentException("PROCENT PODWYŻKI MUSI BYĆ WIĘKSZY OD 0");
           }
-          double newPrice = netPrice * (1 + percent / 100);
+          Money raise = netPrice.applyPercent(percent);
+          Money newPrice = netPrice.add(raise);
           this.netPrice = newPrice;
      }
 
@@ -121,8 +124,11 @@ public abstract class Product implements Identifiable<String> {
           if (!(percent > 0 && percent < 100)) {
                throw new IllegalArgumentException("ZNIŻKA MUSI MIEŚCIĆ SIĘ W ZAKRESIE");
           }
-          double newPrice = netPrice * (1 - percent / 100);
-          if (newPrice < 0.01) {
+          Money discount = netPrice.applyPercent(percent);
+          Money newPrice =  netPrice.subtract(discount);
+          Money minimum = Money.of("0.01", netPrice.currency());
+
+          if (minimum.isGreaterThan(newPrice)) {
                throw new IllegalArgumentException("CENA NIE MOŻE ZEJŚĆ PONIŻEJ 0,01");
           }
           this.netPrice = newPrice;
@@ -143,7 +149,7 @@ public abstract class Product implements Identifiable<String> {
 
      @Override
      public String toString() {
-          return sku + " " + name + " - " + String.format (Locale.forLanguageTag("pl-PL"), "NETTO %.2f / BRUTTO %.2f ZŁ", netPrice, getGrossPrice());
+          return sku + " " + name + " - " + String.format ("NETTO %s / BRUTTO %s", netPrice, getGrossPrice());
      }
 
      @Override

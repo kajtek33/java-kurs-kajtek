@@ -5,10 +5,10 @@ public class ElectronicsOnlyDiscount implements DiscountPolicy {
     private static final double PERCENT = 10;
 
     @Override
-    public double apply(double price) {
-        double discount = price * (PERCENT / 100);
-        double finalSum = price - discount;
-        return finalSum;
+    public Money apply(Money price) {
+        Money discount = price.applyPercent(PERCENT);
+        Money newPrice =  price.subtract(discount);
+        return newPrice;
     }
 
     @Override

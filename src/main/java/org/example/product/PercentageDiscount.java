@@ -8,10 +8,10 @@ public class PercentageDiscount implements DiscountPolicy {
     }
 
     @Override
-    public double apply(double price) {
-        double discount = price * (percent / 100);
-        double finalSum = price - discount;
-        return finalSum;
+    public Money apply(Money price) {
+        Money discount = price.applyPercent(percent);
+        Money newPrice =  price.subtract(discount);
+        return newPrice;
     }
 
     @Override

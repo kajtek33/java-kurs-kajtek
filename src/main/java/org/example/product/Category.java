@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public enum Category {
-    ELECTRONICS("Elektronika", 0.23, false),
-    FOOD("Spożywcze", 0.05, false),
-    ALCOHOL("Alkohol", 0.23, true),
-    BOOKS("Książki", 0.05, false);
+    ELECTRONICS("Elektronika", 23, false),
+    FOOD("Spożywcze", 5, false),
+    ALCOHOL("Alkohol", 23, true),
+    BOOKS("Książki", 5, false);
 
     private final String displayName;
     private final double vatRate;
@@ -32,8 +32,9 @@ public enum Category {
         return requiresAgeVerification;
     }
 
-    public double calculateGross(double net) {
-       return net + net * vatRate;
+    public Money calculateGross(Money net) {
+        Money vat = net.applyPercent(vatRate);
+        return net.add(vat);
     }
 
     public static List<Category> withoutAgeCheck() {
