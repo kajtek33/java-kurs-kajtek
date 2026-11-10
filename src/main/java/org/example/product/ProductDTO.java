@@ -1,6 +1,7 @@
 package org.example.product;
 
-public record ProductDTO(@NotBlank String sku, @NotBlank @MaxLength(value = 50) String name, @Positive double netPrice, Category category) {
+public record ProductDTO(@NotBlank String sku, @NotBlank @MaxLength(value = 50) String name, @Positive Money netPrice, Category category) {
+    private static final String DEFAULT_CURRENCY = "PLN";
     public ProductDTO {
 
         if (sku == null || sku.isBlank()) {
@@ -12,7 +13,11 @@ public record ProductDTO(@NotBlank String sku, @NotBlank @MaxLength(value = 50) 
             throw new IllegalArgumentException("NAME NIE MOŻE BYĆ PUSTE");
         }
 
-        if (!(netPrice > 0)) {
+        if (netPrice == null) {
+            throw new IllegalArgumentException("BRAK CENY");
+        }
+
+        if (!(netPrice.isGreaterThan(Money.zero(netPrice.currency())))) {
             throw new IllegalArgumentException("KWOTA MUSI BYĆ WIĘKSZA OD 0");
         }
 
@@ -21,7 +26,7 @@ public record ProductDTO(@NotBlank String sku, @NotBlank @MaxLength(value = 50) 
         }
     }
 
-    public double grossPrice() {
+    public Money grossPrice() {
         return category.calculateGross(netPrice);
     }
 
@@ -39,9 +44,9 @@ public record ProductDTO(@NotBlank String sku, @NotBlank @MaxLength(value = 50) 
                throw new IllegalArgumentException("ZŁY WIERSZ: " + line);
           }
 
-          double number;
+          Money netPrice;
           try {
-               number = Double.parseDouble(parts[2]);
+               netPrice = Money.of(parts[2], DEFAULT_CURRENCY);
           } catch (NumberFormatException e) {
                throw new IllegalArgumentException("ZŁY WIERSZ: " + line);
           }
@@ -53,6 +58,6 @@ public record ProductDTO(@NotBlank String sku, @NotBlank @MaxLength(value = 50) 
               throw new IllegalArgumentException("ZŁY WIERSZ: " + line);
           }
 
-          return new ProductDTO(parts[0], parts[1], number, category);
+          return new ProductDTO(parts[0], parts[1], netPrice, category);
     }
 }

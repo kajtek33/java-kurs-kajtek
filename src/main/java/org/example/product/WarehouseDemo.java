@@ -2,18 +2,20 @@ package org.example.product;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 public class WarehouseDemo {
+
+    private static final String DEFAULT_CURRENCY = "PLN";
+
     public static void main(String[] args) {
         Warehouse warehouse = new Warehouse();
 
-        warehouse.add(new Electronics("B01", "TABLET", 2500, 12));
-        warehouse.add(new Electronics("B02", "SŁUCHAWKI", 1800, 18));
-        warehouse.add(new FoodProduct("B03", "RYBA", 21.99, LocalDate.of(2026, 12, 31)));
-        warehouse.add(new FoodProduct("B04", "MIĘSO", 40.99, LocalDate.of(2026, 12, 31)));
-        warehouse.add(new DigitalProduct("B05", "KURS", 899, "plik.html"));
+        warehouse.add(new Electronics("B01", "TABLET", Money.of("2500", DEFAULT_CURRENCY), 12));
+        warehouse.add(new Electronics("B02", "SŁUCHAWKI", Money.of("1800", DEFAULT_CURRENCY), 18));
+        warehouse.add(new FoodProduct("B03", "RYBA", Money.of("21.99", DEFAULT_CURRENCY), LocalDate.of(2026, 12, 31)));
+        warehouse.add(new FoodProduct("B04", "MIĘSO", Money.of("40.99", DEFAULT_CURRENCY),  LocalDate.of(2026, 12, 31)));
+        warehouse.add(new DigitalProduct("B05", "KURS", Money.of("899", DEFAULT_CURRENCY),  "plik.html"));
 
         System.out.println("LICZBA PRODUKTÓW: " + warehouse.count());
 
@@ -24,7 +26,7 @@ public class WarehouseDemo {
 
         Optional<Product> found1= warehouse.findById(sku);
 
-        if (found1 == null) {
+        if (found1.isEmpty()) {
             System.out.println("BRAK PRODUKTU O SKU: " + sku);
         } else {
             System.out.println(found1.get().getLabel());

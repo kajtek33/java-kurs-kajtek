@@ -19,14 +19,16 @@ public class ProductValidator {
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
-
             }
+
             if (field.isAnnotationPresent(Positive.class)) {
                try {
                    Object value = field.get(obj);
-                   if (!(value instanceof Number n) ||  n.doubleValue() <= 0) {
-                       errors.add("POLE " + field.getName() + " MUSI BYĆ WIĘKSZE OD 0");
-                   }
+                   boolean positive = ((value instanceof Number n) &&  n.doubleValue() > 0 || (value instanceof Money m && m.amount().signum() > 0));
+                       if (!positive) {
+                           errors.add("POLE " + field.getName() + " MUSI BYĆ WIĘKSZE OD 0");
+                       }
+
                } catch (IllegalAccessException e) {
                    throw new RuntimeException(e);
                }

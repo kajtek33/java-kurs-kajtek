@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class GenericWarehouseDemo {
+
+    private static final String DEFAULT_CURRENCY = "PLN";
+
     public static void main(String[] args) {
         // punkt 4 metody generyczne
 
@@ -13,20 +16,20 @@ public class GenericWarehouseDemo {
         List<Integer> numbers = List.of(5, 1, 3);
         List<FoodProduct> food = new ArrayList<>();
 
-        food.add(new FoodProduct("L-01", "RYBA", 10, LocalDate.of(2026, 12, 12)));
-        food.add(new FoodProduct("L-02", "RYBA", 12, LocalDate.of(2026, 12, 12)));
+        food.add(new FoodProduct("L-01", "RYBA", Money.of("10", DEFAULT_CURRENCY), LocalDate.of(2026, 12, 12)));
+        food.add(new FoodProduct("L-02", "RYBA", Money.of("12", DEFAULT_CURRENCY), LocalDate.of(2026, 12, 12)));
 
         System.out.println(Utils.sortedCopy(original));
         System.out.println(Utils.sortedCopy(numbers));
-        System.out.println(Utils.sumPrices(food));
+        System.out.println(Utils.sumPrices(food, DEFAULT_CURRENCY));
 
         // punkt 5 magazyny
 
         Warehouse<Product> productWarehouse = new Warehouse<>();
 
-        productWarehouse.add(new FoodProduct("A-01", "RYBA", 2.99, LocalDate.of(2026, 12, 31)));
-        productWarehouse.add(new FoodProduct("A-02", "JAJKO", 1.49, LocalDate.of(2026, 12, 31)));
-        productWarehouse.add(new FoodProduct("A-03", "MASŁO", 7.29, LocalDate.of(2026, 12, 31)));
+        productWarehouse.add(new FoodProduct("A-01", "RYBA", Money.of("2.99", DEFAULT_CURRENCY), LocalDate.of(2026, 12, 31)));
+        productWarehouse.add(new FoodProduct("A-02", "JAJKO", Money.of("1.49", DEFAULT_CURRENCY), LocalDate.of(2026, 12, 31)));
+        productWarehouse.add(new FoodProduct("A-03", "MASŁO", Money.of("7.29", DEFAULT_CURRENCY), LocalDate.of(2026, 12, 31)));
 
         Warehouse<Customer> customerWarehouse = new Warehouse<>();
 

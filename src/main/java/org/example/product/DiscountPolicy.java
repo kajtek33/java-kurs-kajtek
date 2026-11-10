@@ -1,7 +1,7 @@
 package org.example.product;
 
 public interface DiscountPolicy {
-    double apply (double price);
+    Money apply(Money price);
     String getName();
 
     default boolean appliesTo(Product p) {

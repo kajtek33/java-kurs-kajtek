@@ -2,11 +2,11 @@ package org.example.product;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class ShoppingCart {
     private final List<Product> products = new ArrayList<>();
     private final DiscountPolicy policy;
+    private static final String DEFAULT_CURRENCY = "PLN";
 
     public ShoppingCart(DiscountPolicy policy) {
         this.policy = policy;
@@ -16,17 +16,17 @@ public class ShoppingCart {
         products.add(p);
     }
 
-    public double getTotal() {
-        double totalSum = 0;
+    public Money getTotal() {
+        Money total = Money.zero(DEFAULT_CURRENCY);
 
         for (Product product : products) {
             if (policy.appliesTo(product)) {
-               totalSum += policy.apply(product.getNetPrice());
+                total = total.add(policy.apply(product.getNetPrice()));
             } else {
-               totalSum +=  product.getNetPrice();
+                total = total.add(product.getNetPrice());
             }
         }
-        return totalSum;
+        return total;
     }
 
     public void remove(String sku) {
@@ -46,19 +46,20 @@ public class ShoppingCart {
     public String getReceipt() {
         String receipt = "PARAGON (" + policy.getName() + ")\n";
 
+
         for (Product product : products) {
-            double price = 0;
+            Money price;
 
             if (policy.appliesTo(product)) {
-                price += policy.apply(product.getNetPrice());
+                price = policy.apply(product.getNetPrice());
             } else {
-                price +=  product.getNetPrice();
+                price =  product.getNetPrice();
             }
 
-            receipt += product.getName() + " " + String.format(Locale.forLanguageTag("pl-PL"), "%.2f", price) + "\n";
+            receipt += product.getName() + " " + price + "\n";
         }
 
-        receipt += "RAZEM: " + String.format(Locale.forLanguageTag("pl-PL"), "%.2f", getTotal()) + "\n";
+        receipt += "RAZEM: " + getTotal() + "\n";
 
         return receipt;
     }
