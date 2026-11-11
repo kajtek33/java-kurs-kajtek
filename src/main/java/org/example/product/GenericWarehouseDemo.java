@@ -2,6 +2,7 @@ package org.example.product;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,15 +28,15 @@ public class GenericWarehouseDemo {
 
         Warehouse<Product> productWarehouse = new Warehouse<>();
 
-        productWarehouse.add(new FoodProduct("A-01", "RYBA", Money.of("2.99", DEFAULT_CURRENCY), LocalDate.of(2026, 12, 31)));
-        productWarehouse.add(new FoodProduct("A-02", "JAJKO", Money.of("1.49", DEFAULT_CURRENCY), LocalDate.of(2026, 12, 31)));
+        productWarehouse.add(new FoodProduct("C-01", "RYBA", Money.of("2.99", DEFAULT_CURRENCY), LocalDate.of(2026, 12, 31)));
+        productWarehouse.add(new FoodProduct("B-02", "JAJKO", Money.of("1.49", DEFAULT_CURRENCY), LocalDate.of(2026, 12, 31)));
         productWarehouse.add(new FoodProduct("A-03", "MASŁO", Money.of("7.29", DEFAULT_CURRENCY), LocalDate.of(2026, 12, 31)));
 
         Warehouse<Customer> customerWarehouse = new Warehouse<>();
 
-        customerWarehouse.add(new Customer("B-01", "ANNA"));
-        customerWarehouse.add(new Customer("B-02", "JAN"));
-        customerWarehouse.add(new Customer("B-03", "NORBERT"));
+        customerWarehouse.add(new Customer("A-01", "ANNA"));
+        customerWarehouse.add(new Customer("H-02", "JAN"));
+        customerWarehouse.add(new Customer("D-03", "NORBERT"));
 
         System.out.println(productWarehouse.count());
         System.out.println(customerWarehouse.count());
@@ -64,6 +65,24 @@ public class GenericWarehouseDemo {
             System.out.println("BRAK PRODUKTU O ID 'A-04'");
         }
 
-        // customerWarehouse.add(new FoodProduct("A-05", "MASŁO", 7.29, LocalDate.of(2026, 12, 31)));
+        //PD-10 MONEY TESTY
+        System.out.println(Utils.sortedCopy(productWarehouse.findAll()));
+        Product egg = productWarehouse.findById("B-02").orElseThrow();
+        Product fish = productWarehouse.findById("C-01").orElseThrow();
+        Product butter = productWarehouse.findById("A-03").orElseThrow();
+        System.out.println(egg.getLabel());
+
+        ShoppingCart shoppingCart = new ShoppingCart(new FixedAmountDiscount(Money.of("1", DEFAULT_CURRENCY)));
+        shoppingCart.add(egg, 2);
+        shoppingCart.add(egg, 4);
+        shoppingCart.add(fish, 5);
+        shoppingCart.add(butter, 2);
+        System.out.println(shoppingCart.generateReceipt());
+
+        System.out.println(shoppingCart.getSortedBy(Comparator.naturalOrder()));
+        System.out.println(shoppingCart.getSortedBy(Comparator.comparing(Product::getName)));
+
+        DigitalProduct ebook = new DigitalProduct("A01", "E-BOOK", Money.of("1000", DEFAULT_CURRENCY), "ebook@123");
+        System.out.println(ebook.getLabel());
     }
 }

@@ -1,14 +1,18 @@
 package org.example.product;
 
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public abstract class Product implements Identifiable<String> {
+@Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public abstract class Product implements Identifiable<String>, Comparable<Product> {
      static final double DEFAULT_VAT_RATE = 23;
      private static int createdCount = 0;
 
+     @EqualsAndHashCode.Include
      private final String sku;
      private final String name;
      private Money netPrice;
@@ -52,17 +56,6 @@ public abstract class Product implements Identifiable<String> {
           return createdCount;
      }
 
-     public String getSku() {
-          return sku;
-     }
-
-     public String getName() {
-          return name;
-     }
-
-     public Money getNetPrice() {
-          return netPrice;
-     }
      public List<String> getTags() {
           return List.copyOf(tags);
      }
@@ -78,9 +71,6 @@ public abstract class Product implements Identifiable<String> {
 
      public abstract Money getShippingCost();
 
-     public Category getCategory() {
-          return category;
-     }
 
      // CENA W ZADANIU OZNACZA CENE NETTO
      public final Money getTotalPrice() {
@@ -88,9 +78,7 @@ public abstract class Product implements Identifiable<String> {
           return total;
      }
 
-     public final String getLabel() {
-          return name + " [" + getCategory().getDisplayName() + "] — " + netPrice + " (Z WYSYŁKĄ " + getTotalPrice() + ")";
-     }
+     public abstract String getLabel();
 
      public static void setCreatedCount(int createdCount) {
           Product.createdCount = createdCount;
@@ -135,19 +123,6 @@ public abstract class Product implements Identifiable<String> {
      }
 
      @Override
-     public boolean equals(Object o) {
-          if (this == o) return true;
-          if (o == null || getClass() !=o.getClass()) return false;
-          Product other = (Product) o;
-          return sku.equals(other.sku);
-     }
-
-     @Override
-     public int hashCode() {
-          return Objects.hash(sku);
-     }
-
-     @Override
      public String toString() {
           return sku + " " + name + " - " + String.format ("NETTO %s / BRUTTO %s", netPrice, getGrossPrice());
      }
@@ -155,5 +130,10 @@ public abstract class Product implements Identifiable<String> {
      @Override
      public String getId() {
           return sku;
+     }
+
+     @Override
+     public int compareTo(Product o) {
+          return this.sku.compareTo(o.sku);
      }
 }
