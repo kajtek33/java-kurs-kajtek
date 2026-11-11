@@ -1,11 +1,10 @@
 package org.example.product;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class PercentageDiscount implements DiscountPolicy {
     private final double percent;
-
-    public PercentageDiscount(double percent) {
-        this.percent = percent;
-    }
 
     @Override
     public Money apply(Money price) {
