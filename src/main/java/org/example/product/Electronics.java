@@ -1,16 +1,18 @@
 package org.example.product;
 
+import lombok.Getter;
+
+@Getter
 public class Electronics extends Product {
     private final int warrantyMonths;
 
-    public Electronics(String sku, String name, Money netPrice, int warrantyMonths) {
-        super(sku, name, netPrice, Category.ELECTRONICS);
-
+    public Electronics(String sku, String name, Money netPrice, int warrantyMonths, Supplier supplier) {
+        super(sku, name, netPrice, Category.ELECTRONICS, supplier);
         this.warrantyMonths = warrantyMonths;
     }
 
-    public int getWarrantyMonths() {
-        return warrantyMonths;
+    public Electronics(String sku, String name, Money netPrice, int warrantyMonths) {
+        this(sku, name, netPrice, warrantyMonths, null);
     }
 
     @Override
@@ -25,5 +27,10 @@ public class Electronics extends Product {
     @Override
     public String getDescription() {
         return super.getDescription() + " (GWARANCJA " + warrantyMonths + " MIES.)";
+    }
+
+    @Override
+    public final String getLabel() {
+        return getName() + " [" + getCategory().getDisplayName() + "] — " + getNetPrice() + " (Z WYSYŁKĄ " + getTotalPrice() + "), " + "GWARANCJA " + getWarrantyMonths() + " MIES.";
     }
 }

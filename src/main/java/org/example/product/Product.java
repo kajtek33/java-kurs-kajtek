@@ -1,21 +1,27 @@
 package org.example.product;
 
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
-public abstract class Product implements Identifiable<String> {
+@Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public abstract class Product implements Identifiable<String>, Comparable<Product> {
      static final double DEFAULT_VAT_RATE = 23;
      private static int createdCount = 0;
 
+     @EqualsAndHashCode.Include
      private final String sku;
      private final String name;
      private Money netPrice;
      private final List<String> tags;
      private final Category category;
+     private final Supplier supplier;
 
-     protected Product(String sku, String name, Money netPrice, Category category) {
+     protected Product(String sku, String name, Money netPrice, Category category, Supplier supplier) {
           if (sku == null || sku.isBlank()) {
                throw new IllegalArgumentException("SKU NIE MOŻE BYĆ PUSTY");
           }
@@ -41,28 +47,22 @@ public abstract class Product implements Identifiable<String> {
           }
           this.category = category;
           createdCount++;
+          this.supplier = supplier;
      }
 
      protected Product(Product other) {
-          this(other.sku, other.name, other.netPrice, other.category);
+          this(other.sku, other.name, other.netPrice, other.category, other.supplier);
           tags.addAll(other.tags);
+     }
+
+     protected Product(String sku, String name, Money netPrice, Category category) {
+          this(sku, name, netPrice, category, null);
      }
 
      public static int getCreatedCount() {
           return createdCount;
      }
 
-     public String getSku() {
-          return sku;
-     }
-
-     public String getName() {
-          return name;
-     }
-
-     public Money getNetPrice() {
-          return netPrice;
-     }
      public List<String> getTags() {
           return List.copyOf(tags);
      }
@@ -78,9 +78,6 @@ public abstract class Product implements Identifiable<String> {
 
      public abstract Money getShippingCost();
 
-     public Category getCategory() {
-          return category;
-     }
 
      // CENA W ZADANIU OZNACZA CENE NETTO
      public final Money getTotalPrice() {
@@ -88,9 +85,7 @@ public abstract class Product implements Identifiable<String> {
           return total;
      }
 
-     public final String getLabel() {
-          return name + " [" + getCategory().getDisplayName() + "] — " + netPrice + " (Z WYSYŁKĄ " + getTotalPrice() + ")";
-     }
+     public abstract String getLabel();
 
      public static void setCreatedCount(int createdCount) {
           Product.createdCount = createdCount;
@@ -133,19 +128,18 @@ public abstract class Product implements Identifiable<String> {
           }
           this.netPrice = newPrice;
      }
+     private int stock;
 
-     @Override
-     public boolean equals(Object o) {
-          if (this == o) return true;
-          if (o == null || getClass() !=o.getClass()) return false;
-          Product other = (Product) o;
-          return sku.equals(other.sku);
+     public void setStock(int stock) {
+          if (stock < 0) {
+               throw new IllegalArgumentException("STAN MAGAZYNOWY NIE MOŻE BYĆ UJEMNY");
+          }
+          this.stock = stock;
      }
 
-     @Override
-     public int hashCode() {
-          return Objects.hash(sku);
-     }
+     public Optional<Supplier> findSupplier() {
+          return Optional.ofNullable(supplier); }
+
 
      @Override
      public String toString() {
@@ -155,5 +149,10 @@ public abstract class Product implements Identifiable<String> {
      @Override
      public String getId() {
           return sku;
+     }
+
+     @Override
+     public int compareTo(Product o) {
+          return this.sku.compareTo(o.sku);
      }
 }
