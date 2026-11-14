@@ -6,9 +6,13 @@ import lombok.Getter;
 public class Electronics extends Product {
     private final int warrantyMonths;
 
-    public Electronics(String sku, String name, Money netPrice, int warrantyMonths) {
-        super(sku, name, netPrice, Category.ELECTRONICS);
+    public Electronics(String sku, String name, Money netPrice, int warrantyMonths, Supplier supplier) {
+        super(sku, name, netPrice, Category.ELECTRONICS, supplier);
         this.warrantyMonths = warrantyMonths;
+    }
+
+    public Electronics(String sku, String name, Money netPrice, int warrantyMonths) {
+        this(sku, name, netPrice, warrantyMonths, null);
     }
 
     @Override
