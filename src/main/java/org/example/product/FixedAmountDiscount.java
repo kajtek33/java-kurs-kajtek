@@ -1,12 +1,11 @@
 package org.example.product;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class FixedAmountDiscount implements DiscountPolicy {
 
     private final Money discount;
-
-    public FixedAmountDiscount(Money discount) {
-        this.discount = discount;
-    }
 
     @Override
     public Money apply(Money price) {

@@ -1,18 +1,13 @@
 package org.example.product;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public class Customer implements Identifiable<String> {
    private final String id;
    private final String name;
-
-    public Customer(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
 
     @Override
     public String toString() {

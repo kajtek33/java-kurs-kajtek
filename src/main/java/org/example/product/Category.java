@@ -1,36 +1,24 @@
 package org.example.product;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
+@RequiredArgsConstructor
 public enum Category {
     ELECTRONICS("Elektronika", 23, false),
     FOOD("Spożywcze", 5, false),
     ALCOHOL("Alkohol", 23, true),
-    BOOKS("Książki", 5, false);
+    BOOKS("Książki", 5, false),
+    DIGITAL("Cyfrowe", 23, false);
 
     private final String displayName;
     private final double vatRate;
     private final boolean requiresAgeVerification;
-
-    Category(String displayName, double vatRate, boolean requiresAgeVerification) {
-        this.displayName = displayName;
-        this.vatRate = vatRate;
-        this.requiresAgeVerification = requiresAgeVerification;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public double getVatRate() {
-        return vatRate;
-    }
-
-    public boolean isRequiresAgeVerification() {
-        return requiresAgeVerification;
-    }
 
     public Money calculateGross(Money net) {
         Money vat = net.applyPercent(vatRate);

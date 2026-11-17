@@ -1,30 +1,39 @@
 package org.example.product;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
+import java.util.*;
+@RequiredArgsConstructor
 public class ShoppingCart {
-    private final List<Product> products = new ArrayList<>();
+    private final Map<Product, Integer> products = new LinkedHashMap<>();
     private final DiscountPolicy policy;
     private static final String DEFAULT_CURRENCY = "PLN";
 
-    public ShoppingCart(DiscountPolicy policy) {
-        this.policy = policy;
-    }
+    public void add(Product p, int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("WARTOŚĆ NIE MOŻE BYĆ RÓWNA 0 LUB MNIEJSZA");
+        }
 
-    public void add(Product p) {
-        products.add(p);
+        if (p == null) {
+            throw new IllegalArgumentException("PRODUKT NIE MOŻE BYĆ PUSTY");
+        }
+        int currentQuantity = products.getOrDefault(p, 0);
+        products.put(p, quantity + currentQuantity);
     }
 
     public Money getTotal() {
         Money total = Money.zero(DEFAULT_CURRENCY);
 
-        for (Product product : products) {
+        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+            Product product = entry.getKey();
+            int quantity= entry.getValue();
+            Money unitPrice;
             if (policy.appliesTo(product)) {
-                total = total.add(policy.apply(product.getNetPrice()));
+                unitPrice = policy.apply(product.getNetPrice());
             } else {
-                total = total.add(product.getNetPrice());
+                unitPrice = product.getNetPrice();
             }
+            total = total.add(unitPrice.multiply(quantity));
         }
         return total;
     }
@@ -33,7 +42,7 @@ public class ShoppingCart {
         Product toRemove = null;
         String normalized = sku.trim().toUpperCase();
 
-        for (Product product : products) {
+        for (Product product : products.keySet()) {
             if (product.getSku().equals(normalized)) {
                 toRemove = product;
             }
@@ -43,24 +52,29 @@ public class ShoppingCart {
         }
     }
 
-    public String getReceipt() {
+    public String generateReceipt() {
         String receipt = "PARAGON (" + policy.getName() + ")\n";
 
-
-        for (Product product : products) {
-            Money price;
-
+        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+            Product product = entry.getKey();
+            int quantity= entry.getValue();
+            Money unitPrice;
             if (policy.appliesTo(product)) {
-                price = policy.apply(product.getNetPrice());
+                unitPrice = policy.apply(product.getNetPrice());
             } else {
-                price =  product.getNetPrice();
+                unitPrice = product.getNetPrice();
             }
-
-            receipt += product.getName() + " " + price + "\n";
+            receipt += product.getName() + " x" + quantity + " po " + unitPrice + "\n";
         }
 
         receipt += "RAZEM: " + getTotal() + "\n";
 
         return receipt;
+    }
+
+    public List<Product> getSortedBy(Comparator<Product> comparator) {
+        List<Product> sorted = new ArrayList<>(products.keySet());
+        sorted.sort(comparator);
+        return sorted;
     }
 }

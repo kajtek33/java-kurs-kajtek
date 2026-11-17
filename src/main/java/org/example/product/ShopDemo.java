@@ -23,28 +23,28 @@ public class ShopDemo {
         products.add(new DigitalProduct("E01", "KURS", Money.of("1099", DEFAULT_CURRENCY), "kurs.pl"));
 
         for (Product p : products) {
-            cart1.add(p);
+            cart1.add(p, 1);
         }
 
         for (Product p : products) {
-            cart2.add(p);
+            cart2.add(p, 1);
         }
 
         for (Product p : products) {
-            cart3.add(p);
+            cart3.add(p, 1);
         }
 
         for (Product p : products) {
-            cart4.add(p);
+            cart4.add(p, 1);
         }
 
         cart1.remove("D01");
         cart2.remove("  d02  ");
         cart3.remove("XYZ");
 
-        System.out.println(cart1.getReceipt());
-        System.out.println(cart2.getReceipt());
-        System.out.println(cart3.getReceipt());
-        System.out.println(cart4.getReceipt());
+        System.out.println(cart1.generateReceipt());
+        System.out.println(cart2.generateReceipt());
+        System.out.println(cart3.generateReceipt());
+        System.out.println(cart4.generateReceipt());
     }
 }
