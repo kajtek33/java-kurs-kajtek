@@ -49,4 +49,5 @@ public class WarehouseDemo {
         }
         System.out.println("PO PRÓBIE: " + warehouse.count());
     }
+
 }
