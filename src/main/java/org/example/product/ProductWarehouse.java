@@ -100,7 +100,7 @@ public class ProductWarehouse extends  Warehouse<Product> {
         for (String sku : skus) {
             try {
                 accepted.add(getOrThrow(sku));
-            } catch (ShopException e) {
+            } catch (ProductNotFoundException e) {
                 System.out.println(e.getMessage());
                 rejected.add(sku);
             }
