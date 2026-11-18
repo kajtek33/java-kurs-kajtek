@@ -79,6 +79,7 @@ public class ProductWarehouse extends  Warehouse<Product> {
             product.findSupplier()
                     .flatMap(Supplier::findAddress)
                     .map(Address::city)
+                    .filter(city -> !city.isBlank())
                     .ifPresent(city -> {
                         if (!(cities.contains(city))) {
                             cities.add(city);

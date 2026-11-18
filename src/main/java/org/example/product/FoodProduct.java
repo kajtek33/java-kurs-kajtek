@@ -7,9 +7,13 @@ import java.time.LocalDate;
 public class FoodProduct extends Product implements Perishable {
    private final LocalDate expiryDate;
 
+    public FoodProduct(String sku, String name, Money netPrice, LocalDate expiryDate, Supplier supplier) {
+        super(sku, name, netPrice, Category.FOOD, supplier);
+        this.expiryDate = expiryDate;
+    }
+
     public FoodProduct(String sku, String name, Money netPrice, LocalDate expiryDate) {
-       super(sku, name, netPrice, Category.FOOD);
-       this.expiryDate = expiryDate;
+        this(sku, name, netPrice, expiryDate, null);
     }
 
     @Override
