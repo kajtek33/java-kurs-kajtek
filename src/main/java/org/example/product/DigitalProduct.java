@@ -6,9 +6,13 @@ import lombok.Getter;
 public class DigitalProduct extends Product {
     private final String downloadUrl;
 
-    public DigitalProduct(String sku, String name, Money netPrice, String downloadUrl) {
-        super(sku, name, netPrice, Category.DIGITAL);
+    public DigitalProduct(String sku, String name, Money netPrice, String downloadUrl, Supplier supplier) {
+        super(sku, name, netPrice, Category.DIGITAL, supplier);
         this.downloadUrl = downloadUrl;
+    }
+
+    public DigitalProduct(String sku, String name, Money netPrice, String downloadUrl) {
+        this(sku, name, netPrice, downloadUrl, null);
     }
 
     @Override

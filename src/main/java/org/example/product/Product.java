@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -18,8 +19,9 @@ public abstract class Product implements Identifiable<String>, Comparable<Produc
      private Money netPrice;
      private final List<String> tags;
      private final Category category;
+     private final Supplier supplier;
 
-     protected Product(String sku, String name, Money netPrice, Category category) {
+     protected Product(String sku, String name, Money netPrice, Category category, Supplier supplier) {
           if (sku == null || sku.isBlank()) {
                throw new IllegalArgumentException("SKU NIE MOŻE BYĆ PUSTY");
           }
@@ -45,11 +47,16 @@ public abstract class Product implements Identifiable<String>, Comparable<Produc
           }
           this.category = category;
           createdCount++;
+          this.supplier = supplier;
      }
 
      protected Product(Product other) {
-          this(other.sku, other.name, other.netPrice, other.category);
+          this(other.sku, other.name, other.netPrice, other.category, other.supplier);
           tags.addAll(other.tags);
+     }
+
+     protected Product(String sku, String name, Money netPrice, Category category) {
+          this(sku, name, netPrice, category, null);
      }
 
      public static int getCreatedCount() {
@@ -121,6 +128,18 @@ public abstract class Product implements Identifiable<String>, Comparable<Produc
           }
           this.netPrice = newPrice;
      }
+     private int stock;
+
+     public void setStock(int stock) {
+          if (stock < 0) {
+               throw new IllegalArgumentException("STAN MAGAZYNOWY NIE MOŻE BYĆ UJEMNY");
+          }
+          this.stock = stock;
+     }
+
+     public Optional<Supplier> findSupplier() {
+          return Optional.ofNullable(supplier); }
+
 
      @Override
      public String toString() {
