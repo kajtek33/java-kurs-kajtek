@@ -91,6 +91,21 @@ public class ProductWarehouse extends  Warehouse<Product> {
 
     public Product getOrThrow(String sku) {
         return findById(sku)
-                .orElseThrow(() -> new IllegalArgumentException("NIE ZNALEZIONO PRODUKTU O SKU: " + sku));
+                .orElseThrow(() -> new ProductNotFoundException(sku));
+    }
+
+    public OrderResult processOrder(List<String> skus) {
+        List<Product> accepted = new ArrayList<>();
+        List<String> rejected = new ArrayList<>();
+
+        for (String sku : skus) {
+            try {
+                accepted.add(getOrThrow(sku));
+            } catch (ProductNotFoundException e) {
+                System.out.println(e.getMessage());
+                rejected.add(sku);
+            }
+        }
+        return new OrderResult(accepted, rejected);
     }
 }
