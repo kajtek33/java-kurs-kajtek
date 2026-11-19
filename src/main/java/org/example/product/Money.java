@@ -7,19 +7,19 @@ import java.util.Locale;
 public record Money(BigDecimal amount, String currency) {
     public Money {
         if (amount == null)  {
-            throw new IllegalArgumentException("POLE 'AMOUNT' NIE MOŻE BYĆ PUSTE");
+            throw new ShopException("POLE 'AMOUNT' NIE MOŻE BYĆ PUSTE");
 
         }
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(amount + " NIE MOŻE BYĆ MNIEJSZE OD ZERA");
+            throw new ShopException(amount + " NIE MOŻE BYĆ MNIEJSZE OD ZERA");
         }
 
         if (currency == null) {
-            throw new IllegalArgumentException("POLE 'CURRENCY' NIE MOŻE BYĆ PUSTE");
+            throw new ShopException("POLE 'CURRENCY' NIE MOŻE BYĆ PUSTE");
         }
 
         if (currency.isBlank()) {
-            throw new IllegalArgumentException("POLE 'CURRENCY' NIE MOŻE BYĆ PUSTE");
+            throw new ShopException("POLE 'CURRENCY' NIE MOŻE BYĆ PUSTE");
         }
         currency = currency.trim().toUpperCase();
         amount = amount.setScale(2, RoundingMode.HALF_UP);
@@ -41,14 +41,14 @@ public record Money(BigDecimal amount, String currency) {
         }
 
         if (difference.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("WYNIK NIE MOŻE BYĆ UJEMNY");
+            throw new ShopException("WYNIK NIE MOŻE BYĆ UJEMNY");
         }
         return new Money(difference, currency);
     }
 
     public Money multiply(int quantity) {
         if (quantity < 0) {
-            throw new IllegalArgumentException("ILOŚĆ NIE MOŻE BYĆ UJEMNA: " + quantity);
+            throw new ShopException("ILOŚĆ NIE MOŻE BYĆ UJEMNA: " + quantity);
         }
         BigDecimal quantityDecimal = BigDecimal.valueOf(quantity);
         BigDecimal product = amount.multiply(quantityDecimal);
@@ -57,7 +57,7 @@ public record Money(BigDecimal amount, String currency) {
 
     public Money applyPercent(double percent) {
         if (percent < 0) {
-            throw new IllegalArgumentException("PROCENT NIE MOŻE BYĆ UJEMNY: " + percent);
+            throw new ShopException("PROCENT NIE MOŻE BYĆ UJEMNY: " + percent);
         }
         BigDecimal percentDecimal = BigDecimal.valueOf(percent);
         BigDecimal hundred = BigDecimal.valueOf(100);
