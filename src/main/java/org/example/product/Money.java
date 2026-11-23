@@ -7,11 +7,11 @@ import java.util.Locale;
 public record Money(BigDecimal amount, String currency) {
     public Money {
         if (amount == null)  {
-            throw new ShopException("POLE 'AMOUNT' NIE MOŻE BYĆ PUSTE");
+            throw new InvalidPriceException(String.valueOf(amount));
 
         }
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ShopException(amount + " NIE MOŻE BYĆ MNIEJSZE OD ZERA");
+            throw new InvalidPriceException(String.valueOf(amount));
         }
 
         if (currency == null) {
@@ -41,7 +41,7 @@ public record Money(BigDecimal amount, String currency) {
         }
 
         if (difference.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ShopException("WYNIK NIE MOŻE BYĆ UJEMNY");
+            throw new InvalidPriceException(String.valueOf(difference));
         }
         return new Money(difference, currency);
     }
