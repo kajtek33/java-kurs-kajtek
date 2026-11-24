@@ -1,6 +1,8 @@
 package org.example.product;
 
 
+import java.util.List;
+
 public class SupplyChainDemo {
     private static final String DEFAULT_CURRENCY = "PLN";
 
@@ -65,8 +67,11 @@ public class SupplyChainDemo {
         System.out.println(warehouse.getOrThrow("E-1"));
         try {
             warehouse.getOrThrow("NIE-MA");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Błąd: " + e.getMessage());
+        } catch (ProductNotFoundException e) {
+            System.out.println("BŁĄD: " + e.getMessage());
         }
+        OrderResult result = warehouse.processOrder(List.of("E-1", "NIE-MA", "E-6"));
+        System.out.println(result.accepted());
+        System.out.println(result.rejected());
     }
 }

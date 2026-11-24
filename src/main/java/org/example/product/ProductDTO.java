@@ -18,7 +18,7 @@ public record ProductDTO(@NotBlank String sku, @NotBlank @MaxLength(value = 50) 
         }
 
         if (!(netPrice.isGreaterThan(Money.zero(netPrice.currency())))) {
-            throw new IllegalArgumentException("KWOTA MUSI BYĆ WIĘKSZA OD 0");
+            throw new InvalidPriceException(netPrice.toString());
         }
 
         if (category == null) {
