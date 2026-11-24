@@ -37,7 +37,7 @@ public abstract class Product implements Identifiable<String>, Comparable<Produc
           }
 
           if (!(netPrice.isGreaterThan(Money.zero(netPrice.currency())))) {
-               throw new InvalidPriceException(netPrice);
+               throw new InvalidPriceException(netPrice.toString());
           }
           this.netPrice = netPrice;
           this.tags = new ArrayList<>();
@@ -124,7 +124,7 @@ public abstract class Product implements Identifiable<String>, Comparable<Produc
           Money minimum = Money.of("0.01", netPrice.currency());
 
           if (minimum.isGreaterThan(newPrice)) {
-               throw new InvalidPriceException(newPrice);
+               throw new InvalidPriceException(netPrice.toString());
           }
           this.netPrice = newPrice;
      }

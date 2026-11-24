@@ -10,8 +10,4 @@ public class InvalidPriceException extends ShopException {
         super("INVALID PRICE: " + price);
         this.price = price;
     }
-
-    public InvalidPriceException(Money price) {
-        this(price.toString());
-    }
 }
